@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-import { type Component, from } from 'solid-js'
+import { type Component } from 'solid-js'
 
 import horizontalStraightLine from './horizontalStraightLine'
 import horizontalRayLine from './horizontalRayLine'
@@ -167,5 +167,5 @@ interface IconProps {
   name: string
 }
 
-// @ts-expect-error
+// @ts-expect-error - Dynamic property access using props.name as key in mapping object
 export const Icon: Component<IconProps> = props => mapping[props.name](props.class)

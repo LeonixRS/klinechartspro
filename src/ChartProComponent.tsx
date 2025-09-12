@@ -104,7 +104,11 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
     setTheme,
     getTheme: () => theme(),
     setStyles,
-    getStyles: () => widget?.getStyles() ?? {} as Styles,
+    getStyles: () => {
+      const styles = widget?.getStyles()
+      const emptyStyles: Styles = {}
+      return styles ?? emptyStyles
+    },
     setLocale,
     getLocale: () => locale(),
     setTimezone: (timezone: string) => { setTimezone({ key: timezone, text: translateTimezone(props.timezone, locale()) }) },
@@ -173,141 +177,145 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
 
   onMount(() => {
     window.addEventListener('resize', documentResize)
-    widget = init(widgetRef!, {
-      formatter: {
-        formatDate: ({ dateTimeFormat, timestamp, template, type }: { dateTimeFormat: Intl.DateTimeFormat, timestamp: number, template: string, type: FormatDateType }) => {
-          const p = period()
-          switch (p.timespan) {
-            case 'minute': {
-              if (type === 'xAxis') {
-                return utils.formatDate(dateTimeFormat, timestamp, 'HH:mm')
+    if (widgetRef != null) {
+      widget = init(widgetRef, {
+        formatter: {
+          formatDate: ({ dateTimeFormat, timestamp, template, type }: { dateTimeFormat: Intl.DateTimeFormat, timestamp: number, template: string, type: FormatDateType }) => {
+            const p = period()
+            switch (p.timespan) {
+              case 'minute': {
+                if (type === 'xAxis') {
+                  return utils.formatDate(dateTimeFormat, timestamp, 'HH:mm')
+                }
+                return utils.formatDate(dateTimeFormat, timestamp, 'YYYY-MM-DD HH:mm')
               }
-              return utils.formatDate(dateTimeFormat, timestamp, 'YYYY-MM-DD HH:mm')
-            }
-            case 'hour': {
-              if (type === 'xAxis') {
-                return utils.formatDate(dateTimeFormat, timestamp, 'MM-DD HH:mm')
+              case 'hour': {
+                if (type === 'xAxis') {
+                  return utils.formatDate(dateTimeFormat, timestamp, 'MM-DD HH:mm')
+                }
+                return utils.formatDate(dateTimeFormat, timestamp, 'YYYY-MM-DD HH:mm')
               }
-              return utils.formatDate(dateTimeFormat, timestamp, 'YYYY-MM-DD HH:mm')
-            }
-            case 'day':
-            case 'week': return utils.formatDate(dateTimeFormat, timestamp, 'YYYY-MM-DD')
-            case 'month': {
-              if (type === 'xAxis') {
-                return utils.formatDate(dateTimeFormat, timestamp, 'YYYY-MM')
+              case 'day':
+              case 'week': return utils.formatDate(dateTimeFormat, timestamp, 'YYYY-MM-DD')
+              case 'month': {
+                if (type === 'xAxis') {
+                  return utils.formatDate(dateTimeFormat, timestamp, 'YYYY-MM')
+                }
+                return utils.formatDate(dateTimeFormat, timestamp, 'YYYY-MM-DD')
               }
-              return utils.formatDate(dateTimeFormat, timestamp, 'YYYY-MM-DD')
-            }
-            case 'year': {
-              if (type === 'xAxis') {
-                return utils.formatDate(dateTimeFormat, timestamp, 'YYYY')
+              case 'year': {
+                if (type === 'xAxis') {
+                  return utils.formatDate(dateTimeFormat, timestamp, 'YYYY')
+                }
+                return utils.formatDate(dateTimeFormat, timestamp, 'YYYY-MM-DD')
               }
-              return utils.formatDate(dateTimeFormat, timestamp, 'YYYY-MM-DD')
             }
+            return utils.formatDate(dateTimeFormat, timestamp, 'YYYY-MM-DD HH:mm')
           }
-          return utils.formatDate(dateTimeFormat, timestamp, 'YYYY-MM-DD HH:mm')
         }
-      }
-    })
+      })
 
-    if (widget != null) {
-      const watermarkContainer = widget.getDom('candle_pane', 'main')
-      if (watermarkContainer != null) {
-        const watermark = document.createElement('div')
-        watermark.className = 'klinecharts-pro-watermark'
-        if (utils.isString(props.watermark)) {
-          const str = (props.watermark).replace(/(^\s*)|(\s*$)/g, '')
-          watermark.innerHTML = str
-        } else {
-          watermark.appendChild(props.watermark)
+      if (widget != null) {
+        const watermarkContainer = widget.getDom('candle_pane', 'main')
+        if (watermarkContainer != null) {
+          const watermark = document.createElement('div')
+          watermark.className = 'klinecharts-pro-watermark'
+          if (utils.isString(props.watermark)) {
+            const str = (props.watermark).replace(/(^\s*)|(\s*$)/g, '')
+            watermark.innerHTML = str
+          } else {
+            watermark.appendChild(props.watermark)
+          }
+          watermarkContainer.appendChild(watermark)
         }
-        watermarkContainer.appendChild(watermark)
+
+        const priceUnitContainer = widget.getDom('candle_pane', 'yAxis')
+        priceUnitDom = document.createElement('span')
+        priceUnitDom.className = 'klinecharts-pro-price-unit'
+        priceUnitContainer?.appendChild(priceUnitDom)
       }
 
-      const priceUnitContainer = widget.getDom('candle_pane', 'yAxis')
-      priceUnitDom = document.createElement('span')
-      priceUnitDom.className = 'klinecharts-pro-price-unit'
-      priceUnitContainer?.appendChild(priceUnitDom)
-    }
-
-    mainIndicators().forEach(indicator => {
-      createIndicator(widget, indicator, true, { id: 'candle_pane' })
-    })
-    const subIndicatorMap = {}
-    props.subIndicators.forEach(indicator => {
-      const paneId = createIndicator(widget, indicator, true)
-      if (paneId !== null && paneId !== undefined) {
+      mainIndicators().forEach(indicator => {
+        createIndicator(widget, indicator, true, { id: 'candle_pane' })
+      })
+      const subIndicatorMap = {}
+      props.subIndicators.forEach(indicator => {
+        const paneId = createIndicator(widget, indicator, true)
+        if (paneId !== null && paneId !== undefined) {
         // @ts-expect-error Assigning paneId to subIndicatorMap with any key
-        subIndicatorMap[indicator] = paneId
-      }
-    })
-    setSubIndicators(subIndicatorMap)
+          subIndicatorMap[indicator] = paneId
+        }
+      })
+      setSubIndicators(subIndicatorMap)
 
-    // Set up v10 DataLoader instead of loadMore
-    widget?.setDataLoader({
-      getBars: async ({ type, timestamp, symbol: symbolParam, period: periodParam, callback }) => {
-        if (type === 'backward' && timestamp !== null && timestamp !== undefined) {
-          if (!loading) {
-            loading = true
-            try {
-              const p = convertPeriodFromKLineCharts(periodParam)
-              const [to] = adjustFromTo(p, timestamp, 1)
-              const [from] = adjustFromTo(p, to, 500)
-              const kLineDataList = await props.datafeed.getHistoryKLineData(symbolParam, p, Math.floor(from / 1000), Math.floor(to / 1000))
-              callback(kLineDataList, kLineDataList.length > 0)
-            } finally {
-              loading = false
+      // Set up v10 DataLoader instead of loadMore
+      widget?.setDataLoader({
+        getBars: async ({ type, timestamp, symbol: symbolParam, period: periodParam, callback }) => {
+          if (type === 'backward' && timestamp !== null && timestamp !== undefined) {
+            if (!loading) {
+              loading = true
+              try {
+                const p = convertPeriodFromKLineCharts(periodParam)
+                const [to] = adjustFromTo(p, timestamp, 1)
+                const [from] = adjustFromTo(p, to, 500)
+                const kLineDataList = await props.datafeed.getHistoryKLineData(symbolParam, p, Math.floor(from / 1000), Math.floor(to / 1000))
+                callback(kLineDataList, kLineDataList.length > 0)
+              } finally {
+                loading = false
+              }
             }
           }
         }
-      }
-    })
-    widget?.subscribeAction('onIndicatorTooltipFeatureClick', (data) => {
+      })
+      widget?.subscribeAction('onIndicatorTooltipFeatureClick', (data) => {
       // Type the data parameter based on expected tooltip click structure
-      const clickData = data as any
-      if (clickData !== null && clickData !== undefined && typeof clickData === 'object' && 'indicatorName' in clickData) {
-        switch (clickData.iconId) {
-          case 'visible': {
-            widget?.overrideIndicator({ name: clickData.indicatorName, paneId: clickData.paneId, visible: true })
-            break
-          }
-          case 'invisible': {
-            widget?.overrideIndicator({ name: clickData.indicatorName, paneId: clickData.paneId, visible: false })
-            break
-          }
-          case 'setting': {
-            // v10: Use getIndicators with filter instead of getIndicatorByPaneId
-            const indicators = widget?.getIndicators({ paneId: clickData.paneId, name: clickData.indicatorName })
-            const indicator = indicators?.[0] as Indicator
-            if (indicator !== null && indicator !== undefined) {
-              setIndicatorSettingModalParams({
-                visible: true, indicatorName: clickData.indicatorName, paneId: clickData.paneId, calcParams: indicator.calcParams
-              })
+        const clickData = data as any
+        if (clickData !== null && clickData !== undefined && typeof clickData === 'object' && 'indicatorName' in clickData) {
+          switch (clickData.iconId) {
+            case 'visible': {
+              widget?.overrideIndicator({ name: clickData.indicatorName, paneId: clickData.paneId, visible: true })
+              break
             }
-            break
-          }
-          case 'close': {
-            if (clickData.paneId === 'candle_pane') {
-              const newMainIndicators = [...mainIndicators()]
-              widget?.removeIndicator({ paneId: 'candle_pane', name: clickData.indicatorName })
-              newMainIndicators.splice(newMainIndicators.indexOf(clickData.indicatorName), 1)
-              setMainIndicators(newMainIndicators)
-            } else {
-              const newIndicators = { ...subIndicators() }
-              widget?.removeIndicator({ paneId: clickData.paneId, name: clickData.indicatorName })
-              // @ts-expect-error Removing indicator from subIndicators object
-              const { [clickData.indicatorName]: _, ...restIndicators } = newIndicators
-              setSubIndicators(restIndicators)
+            case 'invisible': {
+              widget?.overrideIndicator({ name: clickData.indicatorName, paneId: clickData.paneId, visible: false })
+              break
+            }
+            case 'setting': {
+            // v10: Use getIndicators with filter instead of getIndicatorByPaneId
+              const indicators = widget?.getIndicators({ paneId: clickData.paneId, name: clickData.indicatorName })
+              const indicator = indicators?.[0] as Indicator
+              if (indicator !== null && indicator !== undefined) {
+                setIndicatorSettingModalParams({
+                  visible: true, indicatorName: clickData.indicatorName, paneId: clickData.paneId, calcParams: indicator.calcParams
+                })
+              }
+              break
+            }
+            case 'close': {
+              if (clickData.paneId === 'candle_pane') {
+                const newMainIndicators = [...mainIndicators()]
+                widget?.removeIndicator({ paneId: 'candle_pane', name: clickData.indicatorName })
+                newMainIndicators.splice(newMainIndicators.indexOf(clickData.indicatorName), 1)
+                setMainIndicators(newMainIndicators)
+              } else {
+                const newIndicators = { ...subIndicators() }
+                widget?.removeIndicator({ paneId: clickData.paneId, name: clickData.indicatorName })
+                // @ts-expect-error Removing indicator from subIndicators object
+                const { [clickData.indicatorName]: _, ...restIndicators } = newIndicators
+                setSubIndicators(restIndicators)
+              }
             }
           }
         }
-      }
-    })
+      })
+    }
   })
 
   onCleanup(() => {
     window.removeEventListener('resize', documentResize)
-    dispose(widgetRef!)
+    if (widgetRef != null) {
+      dispose(widgetRef)
+    }
   })
 
   createEffect(() => {
@@ -556,7 +564,10 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
       <Show when={settingModalVisible()}>
         <SettingModal
           locale={props.locale}
-          currentStyles={utils.clone(widgetDefaultStyles() ?? {} as Styles)}
+          currentStyles={(() => {
+            const emptyStyles: Styles = {}
+            return utils.clone(widgetDefaultStyles() ?? emptyStyles)
+          })()}
           onClose={() => { setSettingModalVisible(false) }}
           onChange={style => {
             widget?.setStyles(style)

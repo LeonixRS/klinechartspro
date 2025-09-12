@@ -51,15 +51,15 @@ const Input: Component<InputProps> = p => {
         onFocus={() => { setStatus('focus') }}
         onBlur={() => { setStatus('normal') }}
         onChange={(e) => {
-          // @ts-expect-error
+          // @ts-expect-error Accessing value property from event target
           const v = e.target.value
           if ('precision' in props) {
             let reg
-            const decimalDigit = Math.max(0, Math.floor(props.precision!))
+            const decimalDigit = Math.max(0, Math.floor(props.precision ?? 0))
             if (decimalDigit <= 0) {
-              reg = new RegExp(/^[1-9]\d*$/)
+              reg = /^[1-9]\d*$/
             } else {
-              reg = new RegExp('^\\d+\\.?\\d{0,' + decimalDigit + '}$')
+              reg = new RegExp(`^\\d+\\.?\\d{0,${decimalDigit}}$`)
             }
             if (v === '' || (reg.test(v) && +v >= props.min && +v <= props.max)) {
               props.onChange?.(v === '' ? v : +v)

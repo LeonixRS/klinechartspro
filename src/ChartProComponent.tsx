@@ -16,7 +16,7 @@ import { createSignal, createEffect, onMount, Show, onCleanup, startTransition, 
 
 import {
   init, dispose, utils, type Nullable, type Chart, type OverlayMode, type Styles,
-  ActionType, type PaneOptions, type Indicator, DomPosition, type FormatDateType,
+  type PaneOptions, type Indicator, type FormatDateType,
   type Period as KLineChartsPeriod
 } from 'klinecharts'
 
@@ -41,14 +41,6 @@ export interface ChartProComponentProps extends Required<Omit<ChartProOptions, '
 interface PrevSymbolPeriod {
   symbol: SymbolInfo
   period: Period
-}
-
-// Convert Pro Period format to KLineChart v10 Period format
-function convertPeriodToKLineCharts (period: Period): KLineChartsPeriod {
-  return {
-    type: period.timespan as any, // 'minute', 'hour', 'day', 'week', 'month', 'year'
-    span: period.multiplier
-  }
 }
 
 // Convert KLineChart v10 Period format to Pro Period format
@@ -112,7 +104,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
     setTheme,
     getTheme: () => theme(),
     setStyles,
-    getStyles: () => widget!.getStyles(),
+    getStyles: () => widget?.getStyles() ?? {},
     setLocale,
     getLocale: () => locale(),
     setTimezone: (timezone: string) => { setTimezone({ key: timezone, text: translateTimezone(props.timezone, locale()) }) },
@@ -123,11 +115,11 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
     getPeriod: () => period()
   })
 
-  const documentResize = () => {
+  const documentResize = (): void => {
     widget?.resize()
   }
 
-  const adjustFromTo = (period: Period, toTimestamp: number, count: number) => {
+  const adjustFromTo = (period: Period, toTimestamp: number, count: number): { from: number, to: number } => {
     let to = toTimestamp
     let from = to
     switch (period.timespan) {
@@ -181,7 +173,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
 
   onMount(() => {
     window.addEventListener('resize', documentResize)
-    widget = init(widgetRef!, {
+    widget = init(widgetRef as HTMLElement, {
       formatter: {
         formatDate: ({ dateTimeFormat, timestamp, template, type }: { dateTimeFormat: Intl.DateTimeFormat, timestamp: number, template: string, type: FormatDateType }) => {
           const p = period()
@@ -244,8 +236,8 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
     const subIndicatorMap = {}
     props.subIndicators.forEach(indicator => {
       const paneId = createIndicator(widget, indicator, true)
-      if (paneId) {
-        // @ts-expect-error
+      if (paneId !== null && paneId !== undefined) {
+        // @ts-expect-error Assigning paneId to subIndicatorMap with any key
         subIndicatorMap[indicator] = paneId
       }
     })
@@ -254,7 +246,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
     // Set up v10 DataLoader instead of loadMore
     widget?.setDataLoader({
       getBars: async ({ type, timestamp, symbol: symbolParam, period: periodParam, callback }) => {
-        if (type === 'backward' && timestamp) {
+        if (type === 'backward' && timestamp !== null && timestamp !== undefined) {
           if (!loading) {
             loading = true
             try {
@@ -273,7 +265,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
     widget?.subscribeAction('onIndicatorTooltipFeatureClick', (data) => {
       // Type the data parameter based on expected tooltip click structure
       const clickData = data as any
-      if (clickData.indicatorName) {
+      if (clickData !== null && clickData !== undefined && typeof clickData === 'object' && 'indicatorName' in clickData) {
         switch (clickData.iconId) {
           case 'visible': {
             widget?.overrideIndicator({ name: clickData.indicatorName, paneId: clickData.paneId, visible: true })
@@ -287,7 +279,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
             // v10: Use getIndicators with filter instead of getIndicatorByPaneId
             const indicators = widget?.getIndicators({ paneId: clickData.paneId, name: clickData.indicatorName })
             const indicator = indicators?.[0] as Indicator
-            if (indicator) {
+            if (indicator !== null && indicator !== undefined) {
               setIndicatorSettingModalParams({
                 visible: true, indicatorName: clickData.indicatorName, paneId: clickData.paneId, calcParams: indicator.calcParams
               })
@@ -303,9 +295,9 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
             } else {
               const newIndicators = { ...subIndicators() }
               widget?.removeIndicator({ paneId: clickData.paneId, name: clickData.indicatorName })
-              // @ts-expect-error
-              delete newIndicators[clickData.indicatorName]
-              setSubIndicators(newIndicators)
+              // @ts-expect-error Removing indicator from subIndicators object
+              const { [clickData.indicatorName]: _, ...restIndicators } = newIndicators
+              setSubIndicators(restIndicators)
             }
           }
         }
@@ -315,12 +307,12 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
 
   onCleanup(() => {
     window.removeEventListener('resize', documentResize)
-    dispose(widgetRef!)
+    dispose(widgetRef as HTMLElement)
   })
 
   createEffect(() => {
     const s = symbol()
-    if (s?.priceCurrency) {
+    if (s?.priceCurrency !== null && s?.priceCurrency !== undefined) {
       priceUnitDom.innerHTML = s?.priceCurrency.toLocaleUpperCase()
       priceUnitDom.style.display = 'flex'
     } else {
@@ -338,7 +330,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
       const p = period()
       loading = true
       setLoadingVisible(true)
-      const get = async () => {
+      const get = async (): Promise<void> => {
         const [from, to] = adjustFromTo(p, new Date().getTime(), 500)
         const kLineDataList = await props.datafeed.getHistoryKLineData(s, p, Math.floor(from / 1000), Math.floor(to / 1000))
 
@@ -348,7 +340,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
             if (type === 'init') {
               // Initial data load
               callback(kLineDataList, true)
-            } else if (type === 'backward' && timestamp) {
+            } else if (type === 'backward' && timestamp !== null && timestamp !== undefined) {
               // Load more historical data
               if (!loading) {
                 loading = true
@@ -377,7 +369,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
         loading = false
         setLoadingVisible(false)
       }
-      get()
+      void get()
       return { symbol: s, period: p }
     }
     return prev
@@ -498,9 +490,12 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
   })
 
   createEffect(() => {
-    if (styles()) {
+    if (styles() !== null && styles() !== undefined) {
       widget?.setStyles(styles())
-      setWidgetDefaultStyles(lodashClone(widget!.getStyles()))
+      const widgetStyles = widget?.getStyles()
+      if (widgetStyles !== null && widgetStyles !== undefined) {
+        setWidgetDefaultStyles(lodashClone(widgetStyles))
+      }
     }
   })
 
@@ -533,17 +528,18 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
           }}
           onSubIndicatorChange={data => {
             const newSubIndicators = { ...subIndicators() }
-            if (data.added) {
+            if (data.added !== null && data.added !== undefined && data.added) {
               const paneId = createIndicator(widget, data.name)
-              if (paneId) {
-                // @ts-expect-error
+              if (paneId !== null && paneId !== undefined) {
+                // @ts-expect-error Assigning paneId to newSubIndicators with any key
                 newSubIndicators[data.name] = paneId
               }
             } else {
-              if (data.paneId) {
+              if (data.paneId !== null && data.paneId !== undefined) {
                 widget?.removeIndicator({ paneId: data.paneId, name: data.name })
-                // @ts-expect-error
-                delete newSubIndicators[data.name]
+                // @ts-expect-error Removing indicator from newSubIndicators object
+                const { [data.name]: _, ...restIndicators } = newSubIndicators
+                Object.assign(newSubIndicators, restIndicators)
               }
             }
             setSubIndicators(newSubIndicators)
@@ -560,7 +556,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
       <Show when={settingModalVisible()}>
         <SettingModal
           locale={props.locale}
-          currentStyles={utils.clone(widget!.getStyles())}
+          currentStyles={utils.clone(widget?.getStyles() ?? {})}
           onClose={() => { setSettingModalVisible(false) }}
           onChange={style => {
             widget?.setStyles(style)
@@ -599,11 +595,13 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
         spread={drawingBarVisible()}
         period={period()}
         periods={props.periods}
-        onMenuClick={async () => {
-          try {
-            await startTransition(() => setDrawingBarVisible(!drawingBarVisible()))
-            widget?.resize()
-          } catch (e) {}
+        onMenuClick={() => {
+          void (async (): Promise<void> => {
+            try {
+              await startTransition(() => setDrawingBarVisible(!drawingBarVisible()))
+              widget?.resize()
+            } catch (e) {}
+          })()
         }}
         onSymbolClick={() => { setSymbolSearchModalVisible(!symbolSearchModalVisible()) }}
         onPeriodChange={setPeriod}

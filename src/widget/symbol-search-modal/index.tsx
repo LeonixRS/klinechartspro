@@ -64,7 +64,7 @@ const SymbolSearchModal: Component<SymbolSearchModalProps> = props => {
               <Show when={symbol.logo}>
                 <img alt="symbol" src={symbol.logo}/>
               </Show>
-              <span title={symbol.name ?? ''}>{symbol.shortName ?? symbol.ticker}{`${symbol.name ? `(${symbol.name})` : ''}`}</span>
+              <span title={symbol.name ?? ''}>{symbol.shortName ?? symbol.ticker}{`${(symbol.name !== null && symbol.name !== undefined) ? `(${symbol.name})` : ''}`}</span>
             </div>
             {symbol.exchange ?? ''}
           </li>

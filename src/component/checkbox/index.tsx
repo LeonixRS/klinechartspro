@@ -14,7 +14,7 @@
 
 import { type Component, createSignal, type JSX, createEffect } from 'solid-js'
 
-const CheckedIcon = () => {
+const CheckedIcon = (): JSX.Element => {
   return (
     <svg
       viewBox="0 0 1024 1024"
@@ -25,7 +25,7 @@ const CheckedIcon = () => {
   )
 }
 
-const NormalIcon = () => {
+const NormalIcon = (): JSX.Element => {
   return (
     <svg
       viewBox="0 0 1024 1024"
@@ -56,15 +56,15 @@ const Checkbox: Component<CheckboxProps> = props => {
   return (
     <div
       style={props.style}
-      class={`klinecharts-pro-checkbox ${(innerChecked() && 'checked') || ''} ${props.class || ''}`}
+      class={`klinecharts-pro-checkbox ${(innerChecked() ? 'checked' : '')} ${props.class ?? ''}`}
       onClick={_ => {
         const ck = !innerChecked()
-        ;(props.onChange != null) && props.onChange(ck)
+        props.onChange?.(ck)
         setInnderChecked(ck)
       }}>
       {innerChecked() ? <CheckedIcon/> : <NormalIcon/>}
       {
-      props.label && <span class="label">{props.label}</span>}
+      (props.label !== null && props.label !== undefined && props.label.length > 0) && <span class="label">{props.label}</span>}
     </div>
   )
 }

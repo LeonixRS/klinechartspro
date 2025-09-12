@@ -51,7 +51,7 @@ const Select: Component<SelectProps> = props => {
             {
               props.dataSource.map(data => {
                 const d = data as SelectDataSourceItem
-                // @ts-expect-error
+                // @ts-expect-error Accessing dynamic property from SelectDataSourceItem
                 const v = d[props.valueKey ?? 'text'] ?? data
                 return (
                   <li

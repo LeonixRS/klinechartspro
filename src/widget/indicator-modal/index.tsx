@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-import { type Component, createMemo } from 'solid-js'
+import { type Component } from 'solid-js'
 
 import { Modal, List, Checkbox } from '../../component'
 
@@ -74,7 +74,7 @@ const IndicatorModal: Component<IndicatorModalProps> = props => {
               <li
                 class="row"
                 onClick={_ => {
-                  // @ts-expect-error
+                  // @ts-expect-error Accessing sub indicator properties for event handling
                   props.onSubIndicatorChange({ name, paneId: props.subIndicators[name] ?? '', added: !checked })
                 }}>
                 <Checkbox checked={checked} label={i18n(name.toLowerCase(), props.locale)}/>

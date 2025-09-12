@@ -12,17 +12,16 @@
  * limitations under the License.
  */
 
-import { KLineData } from 'klinecharts'
+import { type KLineData } from 'klinecharts'
 
-import { Datafeed, SymbolInfo, Period, DatafeedSubscribeCallback } from './types'
-
+import { type Datafeed, type SymbolInfo, type Period, type DatafeedSubscribeCallback } from './types'
 
 export default class DefaultDatafeed implements Datafeed {
   constructor (apiKey: string) {
     this._apiKey = apiKey
   }
 
-  private _apiKey: string
+  private readonly _apiKey: string
 
   private _prevSymbolMarket?: string
 
@@ -68,7 +67,7 @@ export default class DefaultDatafeed implements Datafeed {
         const result = JSON.parse(event.data)
         if (result[0].ev === 'status') {
           if (result[0].status === 'auth_success') {
-            this._ws?.send(JSON.stringify({ action: 'subscribe', params: `T.${symbol.ticker}`}))
+            this._ws?.send(JSON.stringify({ action: 'subscribe', params: `T.${symbol.ticker}` }))
           }
         } else {
           if ('sym' in result) {
@@ -85,11 +84,11 @@ export default class DefaultDatafeed implements Datafeed {
         }
       }
     } else {
-      this._ws?.send(JSON.stringify({ action: 'subscribe', params: `T.${symbol.ticker}`}))
+      this._ws?.send(JSON.stringify({ action: 'subscribe', params: `T.${symbol.ticker}` }))
     }
     this._prevSymbolMarket = symbol.market
   }
 
-  unsubscribe(symbol: SymbolInfo, period: Period): void {
+  unsubscribe (symbol: SymbolInfo, period: Period): void {
   }
 }

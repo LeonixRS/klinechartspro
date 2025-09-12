@@ -12,8 +12,7 @@
  * limitations under the License.
  */
 
-import { Component, createSignal, JSX, createEffect } from 'solid-js'
-
+import { type Component, createSignal, type JSX, createEffect } from 'solid-js'
 
 const CheckedIcon = () => {
   return (
@@ -59,9 +58,9 @@ const Checkbox: Component<CheckboxProps> = props => {
       style={props.style}
       class={`klinecharts-pro-checkbox ${(innerChecked() && 'checked') || ''} ${props.class || ''}`}
       onClick={_ => {
-        const ck = !innerChecked();
-        props.onChange && props.onChange(ck);
-        setInnderChecked(ck);
+        const ck = !innerChecked()
+        ;(props.onChange != null) && props.onChange(ck)
+        setInnderChecked(ck)
       }}>
       {innerChecked() ? <CheckedIcon/> : <NormalIcon/>}
       {

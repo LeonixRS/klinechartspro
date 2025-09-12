@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-import { Component, createSignal, createMemo } from 'solid-js'
+import { type Component, createSignal, createMemo } from 'solid-js'
 
 import { Modal, Select } from '../../component'
 import type { SelectDataSourceItem } from '../../component'

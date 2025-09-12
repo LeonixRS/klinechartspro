@@ -12,9 +12,9 @@
  * limitations under the License.
  */
 
-import { Component, createMemo, createSignal } from 'solid-js'
+import { type Component, createMemo, createSignal } from 'solid-js'
 
-import { OverlayCreate, OverlayMode } from 'klinecharts'
+import { type OverlayCreate, type OverlayMode } from 'klinecharts'
 
 import { List } from '../../component'
 import {
@@ -27,7 +27,7 @@ import {
 export interface DrawingBarProps {
   locale: string
   onDrawingItemClick: (overlay: OverlayCreate) => void
-  onModeChange: (mode: string) => void,
+  onModeChange: (mode: string) => void
   onLockChange: (lock: boolean) => void
   onVisibleChange: (visible: boolean) => void
   onRemoveClick: (groupId: string) => void
@@ -131,7 +131,7 @@ const DrawingBar: Component<DrawingBarProps> = props => {
           }}>
           {
             modeIcon() === 'weak_magnet'
-              ? (mode() === 'weak_magnet' ? <Icon name="weak_magnet" class="selected"/> : <Icon name="weak_magnet"/>) 
+              ? (mode() === 'weak_magnet' ? <Icon name="weak_magnet" class="selected"/> : <Icon name="weak_magnet"/>)
               : (mode() === 'strong_magnet' ? <Icon name="strong_magnet" class="selected"/> : <Icon name="strong_magnet"/>)
           }
         </span>

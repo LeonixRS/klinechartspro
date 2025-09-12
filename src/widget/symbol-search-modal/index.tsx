@@ -12,13 +12,13 @@
  * limitations under the License.
  */
 
-import { Component, createSignal, createResource, Show } from 'solid-js'
+import { type Component, createSignal, createResource, Show } from 'solid-js'
 
 import { Modal, List, Input } from '../../component'
 
 import i18n from '../../i18n'
 
-import { SymbolInfo, Datafeed } from '../../types'
+import { type SymbolInfo, type Datafeed } from '../../types'
 
 export interface SymbolSearchModalProps {
   locale: string

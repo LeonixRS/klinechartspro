@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-import { createSignal, Component, JSX } from 'solid-js'
+import { createSignal, type Component, type JSX } from 'solid-js'
 
 export interface SelectDataSourceItem {
   key: string
@@ -44,7 +44,7 @@ const Select: Component<SelectProps> = props => {
         <i class="arrow"/>
       </div>
       {
-        (props.dataSource && props.dataSource.length > 0) &&
+        ((props.dataSource != null) && props.dataSource.length > 0) &&
         <div
           class="drop-down-container">
           <ul>

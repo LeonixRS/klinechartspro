@@ -76,7 +76,7 @@ export default {
     { paramNameKey: 'MA2', precision: 0, min: 1, styleKey: 'lines[1].color' },
     { paramNameKey: 'MA3', precision: 0, min: 1, styleKey: 'lines[2].color' },
     { paramNameKey: 'MA4', precision: 0, min: 1, styleKey: 'lines[3].color' },
-    { paramNameKey: 'MA5', precision: 0, min: 1, styleKey: 'lines[4].color' },
+    { paramNameKey: 'MA5', precision: 0, min: 1, styleKey: 'lines[4].color' }
   ],
   MACD: [
     { paramNameKey: 'params_1', precision: 0, min: 1, default: 12 },
@@ -125,7 +125,7 @@ export default {
     { paramNameKey: 'MA2', precision: 0, min: 1, styleKey: 'lines[1].color' },
     { paramNameKey: 'MA3', precision: 0, min: 1, styleKey: 'lines[2].color' },
     { paramNameKey: 'MA4', precision: 0, min: 1, styleKey: 'lines[3].color' },
-    { paramNameKey: 'MA5', precision: 0, min: 1, styleKey: 'lines[4].color' },
+    { paramNameKey: 'MA5', precision: 0, min: 1, styleKey: 'lines[4].color' }
   ],
   VR: [
     { paramNameKey: 'params_1', precision: 0, min: 1, default: 26 },
@@ -136,6 +136,6 @@ export default {
     { paramNameKey: 'WR2', precision: 0, min: 1, styleKey: 'lines[1].color' },
     { paramNameKey: 'WR3', precision: 0, min: 1, styleKey: 'lines[2].color' },
     { paramNameKey: 'WR4', precision: 0, min: 1, styleKey: 'lines[3].color' },
-    { paramNameKey: 'WR5', precision: 0, min: 1, styleKey: 'lines[4].color' },
+    { paramNameKey: 'WR5', precision: 0, min: 1, styleKey: 'lines[4].color' }
   ]
 }

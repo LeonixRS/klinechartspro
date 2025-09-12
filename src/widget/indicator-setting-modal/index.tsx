@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-import { Component, createSignal } from 'solid-js'
+import { type Component, createSignal } from 'solid-js'
 
 import { utils } from 'klinecharts'
 
@@ -51,7 +51,7 @@ const IndicatorSettingModal: Component<IndicatorSettingModalProps> = props => {
             utils.clone(calcParams()).forEach((param: any, i: number) => {
               if (!utils.isValid(param) || param === '') {
                 if ('default' in config[i]) {
-                  params.push(config[i]['default'])
+                  params.push(config[i].default)
                 }
               } else {
                 params.push(param)
@@ -84,7 +84,7 @@ const IndicatorSettingModal: Component<IndicatorSettingModalProps> = props => {
           })
         }
       </div>
-      
+
     </Modal>
   )
 }

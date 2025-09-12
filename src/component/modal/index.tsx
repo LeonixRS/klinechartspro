@@ -12,9 +12,9 @@
  * limitations under the License.
  */
 
-import { ParentComponent, ParentProps, JSX } from 'solid-js'
+import { type ParentComponent, type ParentProps, type JSX } from 'solid-js'
 
-import Button, { ButtonProps } from '../button'
+import Button, { type ButtonProps } from '../button'
 
 export interface ModalProps extends ParentProps {
   width?: number
@@ -46,7 +46,7 @@ const Modal: ParentComponent<ModalProps> = (props) => {
           {props.children}
         </div>
         {
-          (props.buttons && props.buttons.length > 0) && (
+          ((props.buttons != null) && props.buttons.length > 0) && (
             <div
               class="button-container">
               {

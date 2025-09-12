@@ -21,7 +21,7 @@ import KLineChartPro from './KLineChartPro'
 
 import { load } from './i18n'
 
-import { Datafeed, SymbolInfo, Period, DatafeedSubscribeCallback, ChartProOptions, ChartPro } from './types'
+import { type Datafeed, type SymbolInfo, type Period, type DatafeedSubscribeCallback, type ChartProOptions, type ChartPro } from './types'
 
 import './index.less'
 

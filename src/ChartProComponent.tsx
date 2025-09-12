@@ -12,18 +12,18 @@
  * limitations under the License.
  */
 
-import { createSignal, createEffect, onMount, Show, onCleanup, startTransition, Component } from 'solid-js'
+import { createSignal, createEffect, onMount, Show, onCleanup, startTransition, type Component } from 'solid-js'
 
 import {
-  init, dispose, utils, Nullable, Chart, OverlayMode, Styles,
-  ActionType, PaneOptions, Indicator, DomPosition, FormatDateType,
-  Period as KLineChartsPeriod
+  init, dispose, utils, type Nullable, type Chart, type OverlayMode, type Styles,
+  ActionType, type PaneOptions, type Indicator, DomPosition, type FormatDateType,
+  type Period as KLineChartsPeriod
 } from 'klinecharts'
 
 import lodashSet from 'lodash/set'
 import lodashClone from 'lodash/cloneDeep'
 
-import { SelectDataSourceItem, Loading } from './component'
+import { type SelectDataSourceItem, Loading } from './component'
 
 import {
   PeriodBar, DrawingBar, IndicatorModal, TimezoneModal, SettingModal,
@@ -32,7 +32,7 @@ import {
 
 import { translateTimezone } from './widget/timezone-modal/data'
 
-import { SymbolInfo, Period, ChartProOptions, ChartPro } from './types'
+import { type SymbolInfo, type Period, type ChartProOptions, type ChartPro } from './types'
 
 export interface ChartProComponentProps extends Required<Omit<ChartProOptions, 'container'>> {
   ref: (chart: ChartPro) => void
@@ -44,7 +44,7 @@ interface PrevSymbolPeriod {
 }
 
 // Convert Pro Period format to KLineChart v10 Period format
-function convertPeriodToKLineCharts(period: Period): KLineChartsPeriod {
+function convertPeriodToKLineCharts (period: Period): KLineChartsPeriod {
   return {
     type: period.timespan as any, // 'minute', 'hour', 'day', 'week', 'month', 'year'
     span: period.multiplier
@@ -52,7 +52,7 @@ function convertPeriodToKLineCharts(period: Period): KLineChartsPeriod {
 }
 
 // Convert KLineChart v10 Period format to Pro Period format
-function convertPeriodFromKLineCharts(period: KLineChartsPeriod): Period {
+function convertPeriodFromKLineCharts (period: KLineChartsPeriod): Period {
   return {
     multiplier: period.span,
     timespan: period.type,
@@ -73,7 +73,7 @@ function createIndicator (widget: Nullable<Chart>, indicatorName: string, isStac
 }
 
 const ChartProComponent: Component<ChartProComponentProps> = props => {
-  let widgetRef: HTMLDivElement | undefined = undefined
+  const widgetRef: HTMLDivElement | undefined = undefined
   let widget: Nullable<Chart> = null
 
   let priceUnitDom: HTMLElement
@@ -87,7 +87,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
   const [symbol, setSymbol] = createSignal(props.symbol)
   const [period, setPeriod] = createSignal(props.period)
   const [indicatorModalVisible, setIndicatorModalVisible] = createSignal(false)
-  const [mainIndicators, setMainIndicators] = createSignal([...(props.mainIndicators!)])
+  const [mainIndicators, setMainIndicators] = createSignal([...(props.mainIndicators)])
   const [subIndicators, setSubIndicators] = createSignal({})
 
   const [timezoneModalVisible, setTimezoneModalVisible] = createSignal(false)
@@ -105,7 +105,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
   const [loadingVisible, setLoadingVisible] = createSignal(false)
 
   const [indicatorSettingModalParams, setIndicatorSettingModalParams] = createSignal({
-    visible: false, indicatorName: '', paneId: '', calcParams: [] as Array<any>
+    visible: false, indicatorName: '', paneId: '', calcParams: [] as any[]
   })
 
   props.ref({
@@ -218,16 +218,16 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
       }
     })
 
-    if (widget) {
+    if (widget != null) {
       const watermarkContainer = widget.getDom('candle_pane', 'main')
-      if (watermarkContainer) {
-        let watermark = document.createElement('div')
+      if (watermarkContainer != null) {
+        const watermark = document.createElement('div')
         watermark.className = 'klinecharts-pro-watermark'
         if (utils.isString(props.watermark)) {
-          const str = (props.watermark as string).replace(/(^\s*)|(\s*$)/g, '')
+          const str = (props.watermark).replace(/(^\s*)|(\s*$)/g, '')
           watermark.innerHTML = str
         } else {
-          watermark.appendChild(props.watermark as Node)
+          watermark.appendChild(props.watermark)
         }
         watermarkContainer.appendChild(watermark)
       }
@@ -242,7 +242,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
       createIndicator(widget, indicator, true, { id: 'candle_pane' })
     })
     const subIndicatorMap = {}
-    props.subIndicators!.forEach(indicator => {
+    props.subIndicators.forEach(indicator => {
       const paneId = createIndicator(widget, indicator, true)
       if (paneId) {
         // @ts-expect-error
@@ -250,7 +250,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
       }
     })
     setSubIndicators(subIndicatorMap)
-    
+
     // Set up v10 DataLoader instead of loadMore
     widget?.setDataLoader({
       getBars: async ({ type, timestamp, symbol: symbolParam, period: periodParam, callback }) => {
@@ -331,7 +331,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
 
   createEffect((prev?: PrevSymbolPeriod) => {
     if (!loading) {
-      if (prev) {
+      if (prev != null) {
         props.datafeed.unsubscribe(prev.symbol, prev.period)
       }
       const s = symbol()
@@ -341,7 +341,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
       const get = async () => {
         const [from, to] = adjustFromTo(p, new Date().getTime(), 500)
         const kLineDataList = await props.datafeed.getHistoryKLineData(s, p, Math.floor(from / 1000), Math.floor(to / 1000))
-        
+
         // v10: Update the DataLoader to include all data loading logic
         widget?.setDataLoader({
           getBars: async ({ type, timestamp, symbol: symbolParam, period: periodParam, callback }) => {
@@ -373,7 +373,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
             props.datafeed.unsubscribe(symbolParam, p)
           }
         })
-        
+
         loading = false
         setLoadingVisible(false)
       }
@@ -408,7 +408,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
                 code: '\ue903'
               },
               size: 14,
-              color: color,
+              color,
               activeColor: color,
               backgroundColor: 'transparent',
               activeBackgroundColor: 'rgba(22, 119, 255, 0.15)',
@@ -431,7 +431,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
                 code: '\ue901'
               },
               size: 14,
-              color: color,
+              color,
               activeColor: color,
               backgroundColor: 'transparent',
               activeBackgroundColor: 'rgba(22, 119, 255, 0.15)',
@@ -454,7 +454,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
                 code: '\ue902'
               },
               size: 14,
-              color: color,
+              color,
               activeColor: color,
               backgroundColor: 'transparent',
               activeBackgroundColor: 'rgba(22, 119, 255, 0.15)',
@@ -477,7 +477,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
                 code: '\ue900'
               },
               size: 14,
-              color: color,
+              color,
               activeColor: color,
               backgroundColor: 'transparent',
               activeBackgroundColor: 'rgba(22, 119, 255, 0.15)',
@@ -587,7 +587,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
           locale={props.locale}
           params={indicatorSettingModalParams()}
           onClose={() => { setIndicatorSettingModalParams({ visible: false, indicatorName: '', paneId: '', calcParams: [] }) }}
-          onConfirm={(params)=> {
+          onConfirm={(params) => {
             const modalParams = indicatorSettingModalParams()
             widget?.overrideIndicator({ name: modalParams.indicatorName, paneId: modalParams.paneId, calcParams: params })
           }}
@@ -603,15 +603,15 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
           try {
             await startTransition(() => setDrawingBarVisible(!drawingBarVisible()))
             widget?.resize()
-          } catch (e) {}    
+          } catch (e) {}
         }}
         onSymbolClick={() => { setSymbolSearchModalVisible(!symbolSearchModalVisible()) }}
         onPeriodChange={setPeriod}
-        onIndicatorClick={() => { setIndicatorModalVisible((visible => !visible)) }}
-        onTimezoneClick={() => { setTimezoneModalVisible((visible => !visible)) }}
-        onSettingClick={() => { setSettingModalVisible((visible => !visible)) }}
+        onIndicatorClick={() => { setIndicatorModalVisible(visible => !visible) }}
+        onTimezoneClick={() => { setTimezoneModalVisible(visible => !visible) }}
+        onSettingClick={() => { setSettingModalVisible(visible => !visible) }}
         onScreenshotClick={() => {
-          if (widget) {
+          if (widget != null) {
             const url = widget.getConvertPictureUrl(true, 'jpeg', props.theme === 'dark' ? '#151517' : '#ffffff')
             setScreenshotUrl(url)
           }

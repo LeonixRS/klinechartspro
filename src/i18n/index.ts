@@ -20,12 +20,12 @@ const locales = {
   'en-US': enUS
 }
 
-export function load (key: string, ls: any) {
-  // @ts-expect-error
+export function load (key: string, ls: any): void {
+  // @ts-expect-error - Dynamic assignment to locales object with runtime key
   locales[key] = ls
 }
 
-export default (key: string, locale: string) => {
-  // @ts-expect-error
+export default (key: string, locale: string): string => {
+  // @ts-expect-error - Dynamic access to locales object with runtime locale key
   return locales[locale]?.[key] ?? key
 }

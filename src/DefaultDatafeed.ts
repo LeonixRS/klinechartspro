@@ -30,7 +30,7 @@ export default class DefaultDatafeed implements Datafeed {
   async searchSymbols (search?: string): Promise<SymbolInfo[]> {
     const response = await fetch(`https://api.polygon.io/v3/reference/tickers?apiKey=${this._apiKey}&active=true&search=${search ?? ''}`)
     const result = await response.json()
-    return (result.results || []).map((data: any) => ({
+    return (result.results != null ? result.results : []).map((data: any) => ({
       ticker: data.ticker,
       name: data.name,
       shortName: data.ticker,
@@ -45,7 +45,7 @@ export default class DefaultDatafeed implements Datafeed {
   async getHistoryKLineData (symbol: SymbolInfo, period: Period, from: number, to: number): Promise<KLineData[]> {
     const response = await fetch(`https://api.polygon.io/v2/aggs/ticker/${symbol.ticker}/range/${period.multiplier}/${period.timespan}/${from}/${to}?apiKey=${this._apiKey}`)
     const result = await response.json()
-    return await (result.results || []).map((data: any) => ({
+    return (result.results != null ? result.results : []).map((data: any) => ({
       timestamp: data.t,
       open: data.o,
       high: data.h,
@@ -59,7 +59,7 @@ export default class DefaultDatafeed implements Datafeed {
   subscribe (symbol: SymbolInfo, period: Period, callback: DatafeedSubscribeCallback): void {
     if (this._prevSymbolMarket !== symbol.market) {
       this._ws?.close()
-      this._ws = new WebSocket(`wss://delayed.polygon.io/${symbol.market}`)
+      this._ws = new WebSocket(`wss://delayed.polygon.io/${symbol.market ?? ''}`)
       this._ws.onopen = () => {
         this._ws?.send(JSON.stringify({ action: 'auth', params: this._apiKey }))
       }
@@ -71,6 +71,7 @@ export default class DefaultDatafeed implements Datafeed {
           }
         } else {
           if ('sym' in result) {
+            // eslint-disable-next-line n/no-callback-literal
             callback({
               timestamp: result.s,
               open: result.o,

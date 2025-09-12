@@ -81,50 +81,80 @@ export default class KLineChartPro implements ChartPro {
 
   setTheme (theme: string): void {
     this._container?.setAttribute('data-theme', theme)
-    this._chartApi!.setTheme(theme)
+    if (this._chartApi != null) {
+      this._chartApi.setTheme(theme)
+    }
   }
 
   getTheme (): string {
-    return this._chartApi!.getTheme()
+    if (this._chartApi == null) {
+      throw new Error('Chart API not initialized')
+    }
+    return this._chartApi.getTheme()
   }
 
   setStyles (styles: DeepPartial<Styles>): void {
-    this._chartApi!.setStyles(styles)
+    if (this._chartApi != null) {
+      this._chartApi.setStyles(styles)
+    }
   }
 
   getStyles (): Styles {
-    return this._chartApi!.getStyles()
+    if (this._chartApi == null) {
+      throw new Error('Chart API not initialized')
+    }
+    return this._chartApi.getStyles()
   }
 
   setLocale (locale: string): void {
-    this._chartApi!.setLocale(locale)
+    if (this._chartApi != null) {
+      this._chartApi.setLocale(locale)
+    }
   }
 
   getLocale (): string {
-    return this._chartApi!.getLocale()
+    if (this._chartApi == null) {
+      throw new Error('Chart API not initialized')
+    }
+    return this._chartApi.getLocale()
   }
 
   setTimezone (timezone: string): void {
-    this._chartApi!.setTimezone(timezone)
+    if (this._chartApi != null) {
+      this._chartApi.setTimezone(timezone)
+    }
   }
 
   getTimezone (): string {
-    return this._chartApi!.getTimezone()
+    if (this._chartApi == null) {
+      throw new Error('Chart API not initialized')
+    }
+    return this._chartApi.getTimezone()
   }
 
   setSymbol (symbol: SymbolInfo): void {
-    this._chartApi!.setSymbol(symbol)
+    if (this._chartApi != null) {
+      this._chartApi.setSymbol(symbol)
+    }
   }
 
   getSymbol (): SymbolInfo {
-    return this._chartApi!.getSymbol()
+    if (this._chartApi == null) {
+      throw new Error('Chart API not initialized')
+    }
+    return this._chartApi.getSymbol()
   }
 
   setPeriod (period: Period): void {
-    this._chartApi!.setPeriod(period)
+    if (this._chartApi != null) {
+      this._chartApi.setPeriod(period)
+    }
   }
 
   getPeriod (): Period {
-    return this._chartApi!.getPeriod()
+    if (this._chartApi == null) {
+      throw new Error('Chart API not initialized')
+    }
+    return this._chartApi.getPeriod()
   }
 }

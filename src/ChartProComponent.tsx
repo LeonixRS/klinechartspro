@@ -104,7 +104,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
     setTheme,
     getTheme: () => theme(),
     setStyles,
-    getStyles: () => widget?.getStyles() ?? {},
+    getStyles: () => widget?.getStyles() ?? {} as Styles,
     setLocale,
     getLocale: () => locale(),
     setTimezone: (timezone: string) => { setTimezone({ key: timezone, text: translateTimezone(props.timezone, locale()) }) },
@@ -119,7 +119,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
     widget?.resize()
   }
 
-  const adjustFromTo = (period: Period, toTimestamp: number, count: number): { from: number, to: number } => {
+  const adjustFromTo = (period: Period, toTimestamp: number, count: number): [number, number] => {
     let to = toTimestamp
     let from = to
     switch (period.timespan) {
@@ -173,7 +173,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
 
   onMount(() => {
     window.addEventListener('resize', documentResize)
-    widget = init(widgetRef as HTMLElement, {
+    widget = init(widgetRef!, {
       formatter: {
         formatDate: ({ dateTimeFormat, timestamp, template, type }: { dateTimeFormat: Intl.DateTimeFormat, timestamp: number, template: string, type: FormatDateType }) => {
           const p = period()
@@ -307,7 +307,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
 
   onCleanup(() => {
     window.removeEventListener('resize', documentResize)
-    dispose(widgetRef as HTMLElement)
+    dispose(widgetRef!)
   })
 
   createEffect(() => {
@@ -556,7 +556,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
       <Show when={settingModalVisible()}>
         <SettingModal
           locale={props.locale}
-          currentStyles={utils.clone(widget?.getStyles() ?? {})}
+          currentStyles={utils.clone(widgetDefaultStyles() ?? {} as Styles)}
           onClose={() => { setSettingModalVisible(false) }}
           onChange={style => {
             widget?.setStyles(style)

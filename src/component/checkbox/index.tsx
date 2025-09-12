@@ -64,7 +64,7 @@ const Checkbox: Component<CheckboxProps> = props => {
       }}>
       {innerChecked() ? <CheckedIcon/> : <NormalIcon/>}
       {
-      (props.label !== null && props.label !== undefined && props.label.length > 0) && <span class="label">{props.label}</span>}
+      (props.label !== null && props.label !== undefined) && <span class="label">{props.label}</span>}
     </div>
   )
 }

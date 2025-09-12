@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-import { ParentComponent, ParentProps, JSX } from 'solid-js'
+import { type ParentComponent, type ParentProps, type JSX } from 'solid-js'
 
 export type ButtonType = 'confirm' | 'cancel'
 
@@ -27,7 +27,7 @@ const Button: ParentComponent<ButtonProps> = props => {
   return (
     <button
       style={props.style}
-      class={`klinecharts-pro-button ${props.type ?? 'confirm'} ${props.class?? ''}`}
+      class={`klinecharts-pro-button ${props.type ?? 'confirm'} ${props.class ?? ''}`}
       onClick={props.onClick}>
       {props.children}
     </button>

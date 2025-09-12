@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-import { VoidComponent } from "solid-js";
+import { type VoidComponent } from 'solid-js'
 
 const Loding: VoidComponent = () => {
   return (

@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-import { Component, from } from 'solid-js'
+import { type Component, from } from 'solid-js'
 
 import horizontalStraightLine from './horizontalStraightLine'
 import horizontalRayLine from './horizontalRayLine'
@@ -101,7 +101,7 @@ export const mapping = {
 }
 
 export function createSingleLineOptions (locale: string): SelectDataSourceItem[] {
-  return  [
+  return [
     { key: 'horizontalStraightLine', text: i18n('horizontal_straight_line', locale) },
     { key: 'horizontalRayLine', text: i18n('horizontal_ray_line', locale) },
     { key: 'horizontalSegment', text: i18n('horizontal_segment', locale) },
@@ -151,7 +151,7 @@ export function createWaveOptions (locale: string): SelectDataSourceItem[] {
     { key: 'threeWaves', text: i18n('three_waves', locale) },
     { key: 'fiveWaves', text: i18n('five_waves', locale) },
     { key: 'eightWaves', text: i18n('eight_waves', locale) },
-    { key: 'anyWaves', text: i18n('any_waves', locale) },
+    { key: 'anyWaves', text: i18n('any_waves', locale) }
   ]
 }
 

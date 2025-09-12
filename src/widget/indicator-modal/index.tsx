@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-import { Component, createMemo } from 'solid-js'
+import { type Component, createMemo } from 'solid-js'
 
 import { Modal, List, Checkbox } from '../../component'
 
@@ -36,7 +36,6 @@ export interface IndicatorModalProps {
 }
 
 const IndicatorModal: Component<IndicatorModalProps> = props => {
-
   return (
     <Modal
       title={i18n('indicator', props.locale)}
@@ -76,7 +75,7 @@ const IndicatorModal: Component<IndicatorModalProps> = props => {
                 class="row"
                 onClick={_ => {
                   // @ts-expect-error
-                  props.onSubIndicatorChange({ name, paneId: props.subIndicators[name] ?? '', added: !checked });
+                  props.onSubIndicatorChange({ name, paneId: props.subIndicators[name] ?? '', added: !checked })
                 }}>
                 <Checkbox checked={checked} label={i18n(name.toLowerCase(), props.locale)}/>
               </li>

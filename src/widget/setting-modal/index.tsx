@@ -12,8 +12,8 @@
  * limitations under the License.
  */
 
-import { Component, createEffect, For, createSignal } from 'solid-js'
-import { Styles, utils, DeepPartial } from 'klinecharts'
+import { type Component, createEffect, For, createSignal } from 'solid-js'
+import { type Styles, utils, type DeepPartial } from 'klinecharts'
 
 import lodashSet from 'lodash/set'
 
@@ -106,7 +106,7 @@ const SettingModal: Component<SettingModalProps> = props => {
             }
           }
         </For>
-      </div> 
+      </div>
     </Modal>
   )
 }

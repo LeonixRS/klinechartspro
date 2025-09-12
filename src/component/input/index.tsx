@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-import { JSX, Component, mergeProps, Show, createSignal } from 'solid-js'
+import { type JSX, type Component, mergeProps, Show, createSignal } from 'solid-js'
 
 export interface InputProps {
   class?: string
@@ -25,7 +25,7 @@ export interface InputProps {
   placeholder?: string
   value: string | number
   disabled?: boolean
-  onChange?: (v: string | number) => void 
+  onChange?: (v: string | number) => void
 }
 
 const Input: Component<InputProps> = p => {
@@ -42,7 +42,7 @@ const Input: Component<InputProps> = p => {
       onClick={() => { input?.focus() }}>
       <Show when={props.prefix}>
         <span class="prefix">{props.prefix}</span>
-      </Show>  
+      </Show>
       <input
         ref={(el) => { input = el }}
         class="value"
@@ -70,7 +70,7 @@ const Input: Component<InputProps> = p => {
         }}/>
       <Show when={props.suffix}>
         <span class="suffix">{props.suffix}</span>
-      </Show>  
+      </Show>
     </div>
   )
 }

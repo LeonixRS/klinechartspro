@@ -14,11 +14,11 @@
 
 import { render } from 'solid-js/web'
 
-import { utils, Nullable, DeepPartial, Styles } from 'klinecharts'
+import { utils, type Nullable, type DeepPartial, type Styles } from 'klinecharts'
 
 import ChartProComponent from './ChartProComponent'
 
-import { SymbolInfo, Period, ChartPro, ChartProOptions } from './types'
+import { type SymbolInfo, type Period, type ChartPro, type ChartProOptions } from './types'
 
 const Logo = (
   <svg class="logo" viewBox="0 0 80 92">
@@ -31,12 +31,12 @@ const Logo = (
 export default class KLineChartPro implements ChartPro {
   constructor (options: ChartProOptions) {
     if (utils.isString(options.container)) {
-      this._container = document.getElementById(options.container as string)
-      if (!this._container) {
+      this._container = document.getElementById(options.container)
+      if (this._container == null) {
         throw new Error('Container is null')
       }
     } else {
-      this._container = options.container as HTMLElement
+      this._container = options.container
     }
     this._container.classList.add('klinecharts-pro')
     this._container.setAttribute('data-theme', options.theme ?? 'light')
@@ -75,10 +75,9 @@ export default class KLineChartPro implements ChartPro {
     )
   }
 
-  private _container: Nullable<HTMLElement>
+  private readonly _container: Nullable<HTMLElement>
 
   private _chartApi: Nullable<ChartPro> = null
-
 
   setTheme (theme: string): void {
     this._container?.setAttribute('data-theme', theme)
@@ -89,11 +88,11 @@ export default class KLineChartPro implements ChartPro {
     return this._chartApi!.getTheme()
   }
 
-  setStyles(styles: DeepPartial<Styles>): void {
+  setStyles (styles: DeepPartial<Styles>): void {
     this._chartApi!.setStyles(styles)
   }
 
-  getStyles(): Styles {
+  getStyles (): Styles {
     return this._chartApi!.getStyles()
   }
 

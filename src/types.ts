@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-import { KLineData, Styles, DeepPartial } from 'klinecharts'
+import { type KLineData, type Styles, type DeepPartial } from 'klinecharts'
 
 export interface SymbolInfo {
   ticker: string
@@ -36,10 +36,10 @@ export interface Period {
 export type DatafeedSubscribeCallback = (data: KLineData) => void
 
 export interface Datafeed {
-  searchSymbols (search?: string): Promise<SymbolInfo[]>
-  getHistoryKLineData (symbol: SymbolInfo, period: Period, from: number, to: number): Promise<KLineData[]>
-  subscribe (symbol: SymbolInfo, period: Period, callback: DatafeedSubscribeCallback): void
-  unsubscribe (symbol: SymbolInfo, period: Period): void
+  searchSymbols: (search?: string) => Promise<SymbolInfo[]>
+  getHistoryKLineData: (symbol: SymbolInfo, period: Period, from: number, to: number) => Promise<KLineData[]>
+  subscribe: (symbol: SymbolInfo, period: Period, callback: DatafeedSubscribeCallback) => void
+  unsubscribe: (symbol: SymbolInfo, period: Period) => void
 }
 
 export interface ChartProOptions {
@@ -59,16 +59,16 @@ export interface ChartProOptions {
 }
 
 export interface ChartPro {
-  setTheme(theme: string): void
-  getTheme(): string
-  setStyles(styles: DeepPartial<Styles>): void
-  getStyles(): Styles
-  setLocale(locale: string): void
-  getLocale(): string
-  setTimezone(timezone: string): void
-  getTimezone(): string
-  setSymbol(symbol: SymbolInfo): void
-  getSymbol(): SymbolInfo
-  setPeriod(period: Period): void
-  getPeriod(): Period
+  setTheme: (theme: string) => void
+  getTheme: () => string
+  setStyles: (styles: DeepPartial<Styles>) => void
+  getStyles: () => Styles
+  setLocale: (locale: string) => void
+  getLocale: () => string
+  setTimezone: (timezone: string) => void
+  getTimezone: () => string
+  setSymbol: (symbol: SymbolInfo) => void
+  getSymbol: () => SymbolInfo
+  setPeriod: (period: Period) => void
+  getPeriod: () => Period
 }

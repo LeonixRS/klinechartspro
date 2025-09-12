@@ -12,6 +12,7 @@
  * limitations under the License.
  */
 
+import type { JSX } from 'solid-js'
 export default (): JSX.Element => (
   <svg class="icon-overlay" viewBox="0 0 22 22">
     <defs>

@@ -106,8 +106,8 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
     setStyles,
     getStyles: () => {
       const styles = widget?.getStyles()
-      const emptyStyles: Styles = {}
-      return styles ?? emptyStyles
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      return styles!
     },
     setLocale,
     getLocale: () => locale(),
@@ -565,8 +565,8 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
         <SettingModal
           locale={props.locale}
           currentStyles={(() => {
-            const emptyStyles: Styles = {}
-            return utils.clone(widgetDefaultStyles() ?? emptyStyles)
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            return utils.clone(widgetDefaultStyles()!)
           })()}
           onClose={() => { setSettingModalVisible(false) }}
           onChange={style => {

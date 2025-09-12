@@ -30,7 +30,7 @@ export default class DefaultDatafeed implements Datafeed {
   async searchSymbols (search?: string): Promise<SymbolInfo[]> {
     const response = await fetch(`https://api.polygon.io/v3/reference/tickers?apiKey=${this._apiKey}&active=true&search=${search ?? ''}`)
     const result = await response.json()
-    return await (result.results || []).map((data: any) => ({
+    return (result.results || []).map((data: any) => ({
       ticker: data.ticker,
       name: data.name,
       shortName: data.ticker,

@@ -49,15 +49,15 @@ const parallelogram: OverlayTemplate = {
   },
   performEventPressedMove: ({ points, performPointIndex, performPoint }) => {
     if (performPointIndex < 2) {
-      // @ts-expect-error
+      // @ts-expect-error Accessing price property which is not in standard overlay point type
       points[0].price = performPoint.price
-      // @ts-expect-error
+      // @ts-expect-error Accessing price property which is not in standard overlay point type
       points[1].price = performPoint.price
     }
   },
   performEventMoveForDrawing: ({ currentStep, points, performPoint }) => {
     if (currentStep === 2) {
-      // @ts-expect-error
+      // @ts-expect-error Accessing price property which is not in standard overlay point type
       points[0].price = performPoint.price
     }
   }

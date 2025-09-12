@@ -14,7 +14,7 @@
 
 import i18n from '../../i18n'
 
-export function getOptions (locale: string) {
+export function getOptions (locale: string): any[] {
   return [
     {
       key: 'candle.type',

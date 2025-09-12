@@ -39,7 +39,7 @@ const SettingModal: Component<SettingModalProps> = props => {
     setOptions(getOptions(props.locale))
   })
 
-  const update = (option: SelectDataSourceItem, newValue: any) => {
+  const update = (option: SelectDataSourceItem, newValue: any): void => {
     const style = {}
     lodashSet(style, option.key, newValue)
     const ss = utils.clone(styles())
@@ -85,7 +85,7 @@ const SettingModal: Component<SettingModalProps> = props => {
                   break
                 }
                 case 'switch': {
-                  const open = !!value
+                  const open = Boolean(value)
                   component = (
                     <Switch
                       open={open}

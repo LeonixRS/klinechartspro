@@ -33,15 +33,15 @@ const List: ParentComponent<ListProps> = props => {
       <Show when={props.loading}>
         <Loading/>
       </Show>
-      <Show when={!props.loading && !props.children && !props.dataSource?.length}>
+      <Show when={props.loading !== true && props.children === null && (props.dataSource?.length ?? 0) === 0}>
         <Empty/>
       </Show>
       <Show
-        when={props.children}>
+        when={props.children !== null && props.children !== undefined}>
         {props.children}
       </Show>
       <Show
-        when={!props.children}>
+        when={props.children === null || props.children === undefined}>
         {
           props.dataSource?.map(data => (
             props.renderItem?.(data) ?? <li></li>

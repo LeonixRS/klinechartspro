@@ -1,0 +1,27 @@
+{
+  "name": "klinecharts-pro-example",
+  "version": "1.0.0",
+  "description": "Minimal working example of using @klinecharts/pro",
+  "main": "main.js",
+  "scripts": {
+    "start": "npx http-server . -p 8080 -o",
+    "dev": "npx http-server . -p 8080 -o",
+    "build-lib": "cd .. && npm run build",
+    "setup": "npm run build-lib && npm install"
+  },
+  "dependencies": {
+    "klinecharts": "10.0.0-alpha9",
+    "@klinecharts/pro": "file:.."
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "keywords": [
+    "klinecharts",
+    "chart",
+    "example",
+    "minimal"
+  ],
+  "author": "",
+  "license": "Apache-2.0"
+}

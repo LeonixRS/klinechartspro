@@ -1,0 +1,18 @@
+{
+  "name": "klinecharts-pro-basic-example",
+  "version": "1.0.0",
+  "description": "Basic example of using @klinecharts/pro",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "klinecharts": "^10.0.0-alpha9",
+    "@klinecharts/pro": "file:../../"
+  },
+  "devDependencies": {
+    "vite": "^4.3.0"
+  }
+}

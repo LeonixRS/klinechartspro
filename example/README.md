@@ -216,6 +216,10 @@ The datafeed must implement these methods:
 
 ## 🔍 Troubleshooting
 
+### Known Issues
+
+**Current Development Build Issue**: The current development build has a runtime initialization error ("e is not a function"). This is being investigated and will be resolved in future releases. The example code and structure are correct and will work once this issue is fixed.
+
 ### Chart Not Displaying
 - Check browser console for errors
 - Ensure all files are served via HTTP (not file://)

@@ -1,0 +1,18 @@
+{
+  "name": "klinecharts-pro-example-npm",
+  "version": "1.0.0",
+  "description": "Minimal example using KLineChart Pro with npm",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@klinecharts/pro": "^0.1.1",
+    "klinecharts": "^9.8.12"
+  },
+  "devDependencies": {
+    "vite": "^4.1.1"
+  }
+}

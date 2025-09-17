@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KLineChart Pro - NPM Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        .header p {
+            margin: 0;
+            opacity: 0.8;
+        }
+        .chart-container {
+            height: 500px;
+            margin: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+        .info {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #e0e0e0;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>KLineChart Pro - NPM Example</h1>
+            <p>A simple demonstration using npm installation and module bundler</p>
+        </div>
+        
+        <div class="warning">
+            <strong>Note:</strong> This example uses sample mock data for demonstration. 
+            For real trading data, you would need to implement a proper datafeed or use the DefaultDatafeed with a Polygon.io API key.
+        </div>
+        
+        <div id="chart" class="chart-container"></div>
+        
+        <div class="info">
+            <h3>About this example:</h3>
+            <ul>
+                <li>Uses npm installation of @klinecharts/pro (v0.1.1)</li>
+                <li>Built with Vite for development and bundling</li>
+                <li>ES6 modules and modern JavaScript</li>
+                <li>Shows TypeScript-style imports</li>
+            </ul>
+            <h3>Commands:</h3>
+            <ul>
+                <li><code>npm install</code> - Install dependencies</li>
+                <li><code>npm run dev</code> - Start development server</li>
+                <li><code>npm run build</code> - Build for production</li>
+            </ul>
+        </div>
+    </div>
+
+    <script type="module" src="/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KLineChart Pro Test</title>
+    <style>
+        #chart {
+            width: 800px;
+            height: 400px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>KLineChart Pro Test</h1>
+    <div id="chart"></div>
+
+    <!-- Load libraries -->
+    <script src="node_modules/klinecharts/dist/umd/klinecharts.min.js"></script>
+    <script src="node_modules/@klinecharts/pro/dist/klinecharts-pro.umd.js"></script>
+    
+    <script>
+        console.log('Testing KLineChart Pro...');
+        console.log('klinecharts available:', typeof klinecharts !== 'undefined');
+        console.log('klinechartspro available:', typeof klinechartspro !== 'undefined');
+        
+        if (typeof klinechartspro !== 'undefined') {
+            console.log('klinechartspro exports:', Object.keys(klinechartspro));
+            console.log('KLineChartPro constructor:', typeof klinechartspro.KLineChartPro);
+            console.log('DefaultDatafeed constructor:', typeof klinechartspro.DefaultDatafeed);
+            
+            // Try basic instantiation
+            try {
+                console.log('Attempting to create basic chart...');
+                
+                // Create a minimal working datafeed
+                class TestDatafeed {
+                    async searchSymbols() {
+                        return [{
+                            ticker: 'TEST',
+                            shortName: 'Test Symbol'
+                        }];
+                    }
+                    
+                    async getHistoryKLineData() {
+                        // Return minimal data
+                        return [{
+                            timestamp: Date.now(),
+                            open: 100,
+                            high: 105,
+                            low: 95,
+                            close: 102,
+                            volume: 1000
+                        }];
+                    }
+                    
+                    subscribe() {}
+                    unsubscribe() {}
+                }
+                
+                const chart = new klinechartspro.KLineChartPro({
+                    container: document.getElementById('chart'),
+                    symbol: {
+                        ticker: 'TEST',
+                        shortName: 'Test'
+                    },
+                    period: {
+                        multiplier: 1,
+                        timespan: 'day',
+                        text: '1D'
+                    },
+                    datafeed: new TestDatafeed()
+                });
+                
+                console.log('Chart created successfully:', chart);
+                
+            } catch (error) {
+                console.error('Failed to create chart:', error);
+                console.error('Error stack:', error.stack);
+            }
+        }
+    </script>
+</body>
+</html>
